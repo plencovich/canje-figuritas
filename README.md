@@ -22,6 +22,9 @@ Para actualizar los listados, editá únicamente ese archivo. Usá códigos de p
 arrays de números. La web ordena países y números y elimina duplicados al mostrarlos. El PDF
 conserva los datos del JSON, incluidos los duplicados.
 
+La web agrega automáticamente un parámetro de versión al solicitar el JSON y desactiva la caché
+del navegador para que los cambios publicados se carguen sin reutilizar una copia anterior.
+
 ## Probar localmente
 
 La web usa `fetch`, por lo que no conviene abrir `index.html` directamente con `file://`. Desde la

@@ -236,7 +236,10 @@ function startExchange() {
 
 async function loadData() {
   try {
-    const response = await fetch("data/figuritas.json");
+    const dataUrl = new URL("data/figuritas.json", document.baseURI);
+    dataUrl.searchParams.set("v", Date.now().toString());
+
+    const response = await fetch(dataUrl, { cache: "no-store" });
     if (!response.ok) {
       throw new Error(`No se pudo cargar el JSON (${response.status}).`);
     }
