@@ -41,7 +41,7 @@ Luego abrí `http://localhost:8000`.
 En `assets/js/app.js`, reemplazá:
 
 ```js
-const WHATSAPP_PHONE = "549XXXXXXXXXX";
+const WHATSAPP_PHONE = "549XXXXXXXXXX"
 ```
 
 por el número real en formato internacional, sin `+`, espacios ni guiones. Para Argentina, el
@@ -75,3 +75,7 @@ sigue usando el mismo diseño, argumentos y nombres de salida; solamente lee los
 5. Guardá y esperá a que GitHub publique la URL.
 
 No se requiere backend, base de datos ni proceso de compilación.
+
+## Documentación técnica
+
+- [Desarrollo HTML para canje de figuritas](docs/prompts/desarrollo-html-canje-figuritas.md)
