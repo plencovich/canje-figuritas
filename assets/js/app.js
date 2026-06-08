@@ -211,6 +211,19 @@ function hideFormMessage() {
   elements.formMessage.textContent = "";
 }
 
+function setSearchMode(isSearching) {
+  elements.summary.classList.toggle("is-searching", isSearching);
+}
+
+function handleSearchBlur() {
+  requestAnimationFrame(() => {
+    const activeElement = document.activeElement;
+    const searchInputs = [elements.needed.search, elements.offered.search];
+
+    setSearchMode(searchInputs.includes(activeElement));
+  });
+}
+
 function buildWhatsAppMessage() {
   const neededTotal = state.needed.size;
   const offeredTotal = state.offered.size;
@@ -295,6 +308,10 @@ async function loadData() {
 
 elements.needed.search.addEventListener("input", () => filterSection("needed"));
 elements.offered.search.addEventListener("input", () => filterSection("offered"));
+elements.needed.search.addEventListener("focus", () => setSearchMode(true));
+elements.offered.search.addEventListener("focus", () => setSearchMode(true));
+elements.needed.search.addEventListener("blur", handleSearchBlur);
+elements.offered.search.addEventListener("blur", handleSearchBlur);
 elements.needed.clear.addEventListener("click", () => clearSelection("needed"));
 elements.offered.clear.addEventListener("click", () => clearSelection("offered"));
 elements.exchangeButton.addEventListener("click", startExchange);

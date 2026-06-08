@@ -278,6 +278,9 @@ h2 {
   gap: 16px;
   margin-top: 20px;
   padding: 18px;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
 }
 
 .summary-totals {
@@ -367,6 +370,63 @@ h2 {
 
 [hidden] {
   display: none !important;
+}
+
+@media (max-width: 639px) {
+  .main-content {
+    padding-bottom: 84px;
+  }
+
+  .summary {
+    bottom: 8px;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 14px;
+  }
+
+  .summary.is-searching {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(calc(100% + 20px));
+  }
+
+  .summary .step {
+    display: none;
+  }
+
+  .summary h2 {
+    font-size: 1rem;
+  }
+
+  .summary-totals {
+    gap: 6px;
+  }
+
+  .summary-totals div {
+    padding: 7px 6px;
+    border-radius: 10px;
+  }
+
+  .summary-totals dt {
+    font-size: 0.65rem;
+    line-height: 1.15;
+  }
+
+  .summary-totals dd {
+    font-size: 1.05rem;
+  }
+
+  .summary .status,
+  .summary .exchange-rule {
+    padding: 9px 10px;
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .button-primary {
+    min-height: 48px;
+    padding: 11px 16px;
+  }
 }
 
 @media (min-width: 640px) {
