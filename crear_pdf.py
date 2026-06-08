@@ -14,6 +14,32 @@ with data_file.open(encoding="utf-8") as file:
 dataRepetidas = figuritas["repetidas"]
 dataFaltantes = figuritas["faltantes"]
 
+
+def quitar_repetidos(numbers):
+    vistos = set()
+    unicos = []
+
+    for number in numbers:
+        if number in vistos:
+            continue
+
+        vistos.add(number)
+        unicos.append(number)
+
+    return unicos
+
+
+def preparar_datos_para_pdf(data, quitar_duplicados=False):
+    datos_pdf = {}
+
+    for country, numbers in data.items():
+        if quitar_duplicados:
+            datos_pdf[country] = quitar_repetidos(numbers)
+        else:
+            datos_pdf[country] = sorted(numbers)
+
+    return datos_pdf
+
 # Selección de dataset según argumento CLI
 parser = argparse.ArgumentParser(description="Crear PDF listado de países")
 parser.add_argument(
@@ -26,9 +52,9 @@ parser.add_argument(
 args = parser.parse_args()
 
 if args.tipo == "repetidas":
-    data = dataRepetidas
+    data = preparar_datos_para_pdf(dataRepetidas, quitar_duplicados=True)
 else:
-    data = dataFaltantes
+    data = preparar_datos_para_pdf(dataFaltantes)
 
 # Nombre del archivo PDF según el tipo
 pdf_file = f"listado-{args.tipo}.pdf"
@@ -50,16 +76,6 @@ right_x = 320
 
 start_y = height - 80
 line_height = 16
-
-items = sorted(data.items())
-half = (len(items) + 1) // 2
-
-left_column = items[:half]
-right_column = items[half:]
-
-# Ordenar los números dentro de cada país
-for numbers in data.values():
-    numbers.sort()
 
 # Ordenar los países alfabéticamente
 items = sorted(data.items())
