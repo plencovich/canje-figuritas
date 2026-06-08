@@ -1,12 +1,18 @@
 // Reemplazar por el número real en formato internacional, sin +, espacios ni guiones.
 const WHATSAPP_PHONE = "5492477669952";
 
+const EXCHANGE_PACK_SIZE = 10;
+
 const EXCHANGE_RULE =
-  "El canje se realiza figurita por figurita; si necesitas más figuritas de las que vos me das; el canje se realiza 1 sobre cerrado cada 7 figuritas.";
+  `El canje se realiza figurita por figurita; si necesitas más figuritas de las que vos me das; el canje se realiza 1 sobre cerrado cada ${EXCHANGE_PACK_SIZE} figuritas.`;
+
+const CLOSED_PACK_ONLY_RULE =
+  `El cambio es de ${EXCHANGE_PACK_SIZE} figuritas solicitadas por 1 sobre cerrado.`;
 
 const state = {
   needed: new Map(),
   offered: new Map(),
+  offeredHasStickers: true,
 };
 
 const elements = {
@@ -26,6 +32,7 @@ const elements = {
     total: document.querySelector("#needed-total"),
   },
   offered: {
+    tools: document.querySelector("#offered-tools"),
     list: document.querySelector("#offered-list"),
     empty: document.querySelector("#offered-empty"),
     search: document.querySelector("#offered-search"),
@@ -106,9 +113,24 @@ function renderSection(section, dataset) {
   });
 
   elements[section].list.replaceChildren(fragment);
+
+  if (section === "offered" && dataset.length === 0) {
+    state.offeredHasStickers = false;
+    elements.offered.tools.hidden = true;
+    elements.offered.empty.className = "status status-warning";
+    elements.offered.empty.textContent = CLOSED_PACK_ONLY_RULE;
+    elements.offered.empty.hidden = false;
+    elements.offered.search.disabled = true;
+    elements.offered.clear.disabled = true;
+  }
 }
 
 function filterSection(section) {
+  if (section === "offered" && !state.offeredHasStickers) {
+    elements.offered.empty.hidden = false;
+    return;
+  }
+
   const query = elements[section].search.value.trim().toUpperCase();
   let visibleGroups = 0;
 
@@ -169,7 +191,7 @@ function updateSummary() {
   const ruleApplies = neededTotal > offeredTotal;
   elements.exchangeRule.hidden = !ruleApplies;
   if (ruleApplies) {
-    const suggestedPacks = Math.ceil(difference / 7);
+    const suggestedPacks = Math.ceil(difference / EXCHANGE_PACK_SIZE);
     elements.suggestedPacks.textContent =
       `Diferencia: ${difference} figurita${difference === 1 ? "" : "s"}. ` +
       `Sobres sugeridos: ${suggestedPacks}.`;
@@ -210,7 +232,7 @@ function buildWhatsAppMessage() {
       "",
       EXCHANGE_RULE,
       `Diferencia: ${difference} figurita${difference === 1 ? "" : "s"}.`,
-      `Sobres sugeridos: ${Math.ceil(difference / 7)}.`,
+      `Sobres sugeridos: ${Math.ceil(difference / EXCHANGE_PACK_SIZE)}.`,
     );
   }
 
@@ -225,7 +247,12 @@ function startExchange() {
   }
 
   if (state.offered.size === 0) {
-    showFormMessage("No seleccionaste figuritas para dar a cambio.", "warning");
+    showFormMessage(
+      state.offeredHasStickers
+        ? "No seleccionaste figuritas para dar a cambio."
+        : CLOSED_PACK_ONLY_RULE,
+      "warning",
+    );
   } else {
     hideFormMessage();
   }
@@ -249,8 +276,11 @@ async function loadData() {
       throw new Error("El JSON no contiene las claves repetidas y faltantes.");
     }
 
-    renderSection("needed", normalizeDataset(data.repetidas));
-    renderSection("offered", normalizeDataset(data.faltantes));
+    const neededDataset = normalizeDataset(data.repetidas);
+    const offeredDataset = normalizeDataset(data.faltantes);
+
+    renderSection("needed", neededDataset);
+    renderSection("offered", offeredDataset);
     elements.loadStatus.hidden = true;
     elements.exchangeContent.hidden = false;
     elements.summary.hidden = false;
