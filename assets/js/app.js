@@ -1,7 +1,7 @@
 // Reemplazar por el número real en formato internacional, sin +, espacios ni guiones.
 const WHATSAPP_PHONE = "5492477669952";
 
-const EXCHANGE_PACK_SIZE = 10;
+const EXCHANGE_PACK_SIZE = 7;
 
 const EXCHANGE_RULE =
   `El canje se realiza figurita por figurita; si necesitas más figuritas de las que vos me das; el canje se realiza 1 sobre cerrado cada ${EXCHANGE_PACK_SIZE} figuritas.`;
